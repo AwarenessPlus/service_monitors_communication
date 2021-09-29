@@ -75,8 +75,12 @@ namespace Awareness_Desktop.BackEnd.Conexion_Monitores
                     }
                 }
             }
+           
             this._yCoordinates = new List<int>();
             _yCoordinates.AddRange(minimums);
+            Array.Clear(minimums, 0, minimums.Length);
+            imageToSplit = null;
+            GC.Collect();
             return _yCoordinates;
         }
         public static bool WhatColorIs(String color, int blue, int green, int red)
@@ -87,8 +91,8 @@ namespace Awareness_Desktop.BackEnd.Conexion_Monitores
                 return true;
             else if (blue < 65 && green > 215 && red > 215 && color.Equals("Yellow"))
                 return true;
-            else if (blue < 85 && blue > 50 &&
-                 green < 85 && green > 50 && red > 200 && color.Equals("Red"))
+            else if (blue < 100 && blue > 40 &&
+                 green < 100 && green > 40 && red > 195 && color.Equals("Red"))
                 return true;
             else if (blue > 210 && green > 210 && red > 210 && color.Equals("White"))
                 return true;
