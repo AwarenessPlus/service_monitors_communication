@@ -1,4 +1,6 @@
-﻿using monitors_comunication.Models;
+﻿using Emgu.CV;
+using Emgu.CV.Structure;
+using monitors_comunication.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,7 +12,7 @@ namespace monitors_comunication.Services
     {
         public int ConnectMonitor();
 
-        public IMonitor<T> GetDataMonitor();
+        public Dictionary<String,T> GetDataMonitor();
 
         public int DisconnectMonitor();
     }

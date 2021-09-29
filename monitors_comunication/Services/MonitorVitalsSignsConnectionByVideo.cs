@@ -4,12 +4,13 @@ using Emgu.CV.Structure;
 using monitors_comunication.Models;
 using System;
 using System.Collections.Generic;
+using System.Drawing;
 
 namespace monitors_comunication.Services
 {
-    public class MonitorVitalsSignsConnectionByVideo<T> : IMonitorConnection<T>
+    public class MonitorVitalsSignsConnectionByVideo
     {
-        private string path = "C:\\Users\\aulasingenieria\\Documents\\Awareness+\\web services\\monitors_comunication\\service_monitors_comunication\\monitors_comunication\\bin\\Debug\\net5.0\\video\\videoPrueba.mp4";
+        private string path = "C:\\Users\\jmarinflorez\\Documents\\Uni\\service_communication_monitors\\service_monitors_communication\\monitors_comunication\\bin\\Debug\\net5.0\\video\\videoPrueba.mp4";
         private VideoCapture capture;
 
         public string Path { get => path; set => path = value; }
@@ -30,7 +31,7 @@ namespace monitors_comunication.Services
             throw new NotImplementedException();
         }
 
-        public IMonitor<T> GetDataMonitor()
+        public VitalSigns<Bitmap> GetDataMonitor()
         {
             Mat imageAux = new();
             capture.Read(imageAux);
@@ -38,21 +39,24 @@ namespace monitors_comunication.Services
             {
                 return null;
             }
-            CvInvoke.Imwrite("C:\\Users\\aulasingenieria\\Documents\\Awareness+\\web services\\monitors_comunication\\service_monitors_comunication\\monitors_comunication\\bin\\Debug\\net5.0\\video\\hola.png", imageAux);
+            CvInvoke.Imwrite("C:\\Users\\jmarinflorez\\Documents\\Uni\\service_communication_monitors\\service_monitors_communication\\monitors_comunication\\bin\\Debug\\net5.0\\video\\original.png", imageAux);
             string[] colors = { "Green", "Yellow", "Red", "Yellow", "White", "Red", "Yellow" };
             CoordinatesFinder coordinates = new(colors);
             ImageSeparator imageSeparator = new(coordinates.FindxCoordinates(imageAux), coordinates.FindyCoordinates(imageAux));
             imageSeparator.SplitImage(imageAux.ToImage<Bgr, Byte>());
             Image<Bgr, byte>[] arrayOfImages = imageSeparator.GetImagesCreated().ToArray();
-            Dictionary<String, Image<Bgr, byte>> vitalSignImages = new();
-            vitalSignImages.Add(Configuration.Configuration.CARDIAC_FRECUENCY, arrayOfImages[6]);
-            vitalSignImages.Add(Configuration.Configuration.SATURATION, arrayOfImages[10]);
-            vitalSignImages.Add(Configuration.Configuration.NON_INVASIVE_BLOOD_PRESURE, arrayOfImages[24]);
-            VitalSigns<Image<Bgr, byte>> vitalSigns = new();
+            Dictionary<String, Bitmap> vitalSignImages = new();
+            vitalSignImages.Add(Configuration.Configuration.CARDIAC_FRECUENCY,  arrayOfImages[6].Mat.ToBitmap());
+            vitalSignImages.Add(Configuration.Configuration.SATURATION, arrayOfImages[10].Mat.ToBitmap());
+            vitalSignImages.Add(Configuration.Configuration.NON_INVASIVE_BLOOD_PRESURE, arrayOfImages[24].Mat.ToBitmap());
+            VitalSigns<Bitmap> vitalSigns = new();
             vitalSigns.SaveDataMonitor(vitalSignImages);
             Console.WriteLine("imagen añadida");
-            CvInvoke.Imwrite("C:\\Users\\aulasingenieria\\Documents\\Awareness+\\web services\\monitors_comunication\\service_monitors_comunication\\monitors_comunication\\bin\\Debug\\net5.0\\video\\hola.png", arrayOfImages[6]);
-            return (IMonitor<T>)vitalSignImages;
+            CvInvoke.Imwrite("C:\\Users\\jmarinflorez\\Documents\\Uni\\service_communication_monitors\\service_monitors_communication\\monitors_comunication\\bin\\Debug\\net5.0\\video\\hola1.png", arrayOfImages[6]);
+            CvInvoke.Imwrite("C:\\Users\\jmarinflorez\\Documents\\Uni\\service_communication_monitors\\service_monitors_communication\\monitors_comunication\\bin\\Debug\\net5.0\\video\\hola2.png", arrayOfImages[10]);
+            CvInvoke.Imwrite("C:\\Users\\jmarinflorez\\Documents\\Uni\\service_communication_monitors\\service_monitors_communication\\monitors_comunication\\bin\\Debug\\net5.0\\video\\hola3.png", arrayOfImages[24]);
+            return vitalSigns;
         }
+
     }
 }

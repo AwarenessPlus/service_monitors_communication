@@ -51,7 +51,7 @@ namespace Awareness_Desktop.BackEnd.Conexion_Monitores
             }
             for (int j = 0; j < 12; j++)
             {
-                for (int i = (int) (image.Rows * 0.046) ; i < image.Rows*0.92; i++)
+                for (int i = (int) (image.Rows * 0.046) ; i < image.Rows*0.94; i++)
                 {
                     if (!WhatColorIs("Black", imageToSplit.Data[i, j, 0], imageToSplit.Data[i, j, 1], imageToSplit.Data[i, j, 2]))
                     {
@@ -87,8 +87,8 @@ namespace Awareness_Desktop.BackEnd.Conexion_Monitores
                 return true;
             else if (blue < 65 && green > 215 && red > 215 && color.Equals("Yellow"))
                 return true;
-            else if (blue < 85 && blue > 60 &&
-                 green < 85 && green > 60 && red > 210 && color.Equals("Red"))
+            else if (blue < 85 && blue > 50 &&
+                 green < 85 && green > 50 && red > 200 && color.Equals("Red"))
                 return true;
             else if (blue > 210 && green > 210 && red > 210 && color.Equals("White"))
                 return true;
