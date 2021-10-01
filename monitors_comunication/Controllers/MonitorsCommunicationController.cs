@@ -14,21 +14,22 @@ using System.Threading.Tasks;
 
 namespace monitors_comunication.Controllers
 {
-    // https://localhost:44303/MonitorsCommunication
     [Route("api/[controller]")]
     [ApiController]
     public class MonitorsCommunicationController : ControllerBase
     {
 
         MonitorVitalsSignsConnectionByVideo monitorConection = new();
+        ListennerMonitor listenner = new();
+        List<Thread> threads = new();
+
 
         [Route("/Cardiac-frecunecy")]
         [HttpGet]
-        public IActionResult GetCardiacFrecuency()
+        public async Task<IActionResult> GetCardiacFrecuency()
         {
 
-           // monitorConection.GetDataMonitor();            
-            var image = System.IO.File.OpenRead(AppDomain.CurrentDomain.BaseDirectory + "\\video\\hola1.png");
+            var image = await Task.Run(() => System.IO.File.OpenRead(AppDomain.CurrentDomain.BaseDirectory + "\\video\\hola1.png"));
             return File(image, "image/png");
 
 
@@ -37,10 +38,10 @@ namespace monitors_comunication.Controllers
 
         [Route("/saturation")]
         [HttpGet]
-        public IActionResult GetSaturation()
+        public async Task<IActionResult> GetSaturation()
         {
-           // monitorConection.GetDataMonitor();
-            var image = System.IO.File.OpenRead(AppDomain.CurrentDomain.BaseDirectory + "\\video\\hola2.png");
+
+            var image = await Task.Run(() => System.IO.File.OpenRead(AppDomain.CurrentDomain.BaseDirectory + "\\video\\hola2.png"));
             return File(image, "image/png");
 
 
@@ -50,10 +51,10 @@ namespace monitors_comunication.Controllers
 
         [Route("/non-invasive-blood-presure")]
         [HttpGet]
-        public IActionResult GetNonInvasiveBloodPresure()
+        public async Task<IActionResult> GetNonInvasiveBloodPresureAsync()
         {
-            //monitorConection.GetDataMonitor();
-            var image = System.IO.File.OpenRead(AppDomain.CurrentDomain.BaseDirectory + "\\video\\hola3.png");
+            var image =  await Task.Run(() => System.IO.File.OpenRead(AppDomain.CurrentDomain.BaseDirectory + "\\video\\hola3.png"));
+            
             return File(image, "image/png");
 
 
@@ -63,13 +64,36 @@ namespace monitors_comunication.Controllers
 
         [Route("/connect")]
         [HttpGet]
-        public IActionResult GetHealth() {
+        public  IActionResult GetHealthAsync() {
 
-            ListennerMonitor listenner = new();
+            Console.WriteLine(threads.Count);
+            if (threads.Count > 0)
+            {
+                return BadRequest(" The sistem is processing right now another monitor, cancel connection to allow a new connection");
+            }
+
             Console.WriteLine("creating thread");
-            Thread hilo = new(new ThreadStart(listenner.ListenerMonitores));
+            Thread hilo = new(new ThreadStart(listenner.ListenerMonitores));  
             hilo.Start();
+            threads.Add(hilo);
+            Console.WriteLine(threads.Count);
             Console.WriteLine( "thread created");
+            return Ok("System connected");
+
+        }
+
+        [Route("/disconnect")]
+        [HttpGet]
+        public IActionResult DisconnectMonitor()
+        {
+            if (threads.Count > 0)
+            {
+                Thread thread = threads.First<Thread>();
+                thread.Abort();
+                threads.Clear();
+                GC.Collect();
+            }
+            Console.WriteLine("thread fnished");
             return Ok("System connected");
 
         }

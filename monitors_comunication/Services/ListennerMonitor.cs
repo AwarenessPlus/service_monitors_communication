@@ -2,10 +2,6 @@
 using Emgu.CV;
 using Emgu.CV.Structure;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading;
-using System.Threading.Tasks;
 
 namespace monitors_comunication.Services
 {
@@ -33,15 +29,13 @@ namespace monitors_comunication.Services
                         {
                             break;
                         }
-                    }
-                    
-                    
+                    }                   
                     string[] colors = { "Green", "Yellow", "Red", "Yellow", "White", "Red", "Yellow" };
                     CoordinatesFinder coordinates = new(colors);
                     ImageSeparator imageSeparator = new(coordinates.FindxCoordinates(imageAux), coordinates.FindyCoordinates(imageAux));
-                    imageSeparator.SplitImage(imageAux.ToImage<Bgr, Byte>());
+                    imageSeparator.SplitImage(imageAux.ToImage<Bgr, Byte>());                  
                     Image<Bgr, byte>[] arrayOfImages = imageSeparator.GetImagesCreated().ToArray();
-                    CvInvoke.Imwrite(AppDomain.CurrentDomain.BaseDirectory + "\\video\\hola1.png", arrayOfImages[6]);
+                     CvInvoke.Imwrite(AppDomain.CurrentDomain.BaseDirectory + "\\video\\hola1.png", arrayOfImages[6]);
                     CvInvoke.Imwrite(AppDomain.CurrentDomain.BaseDirectory + "\\video\\hola2.png", arrayOfImages[10]);
                     CvInvoke.Imwrite(AppDomain.CurrentDomain.BaseDirectory + "\\video\\hola3.png", arrayOfImages[24]);
                     arrayOfImages = null;
