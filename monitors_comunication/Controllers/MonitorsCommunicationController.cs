@@ -21,7 +21,7 @@ namespace monitors_comunication.Controllers
 
         MonitorVitalsSignsConnectionByVideo monitorConection = new();
         ListennerMonitor listenner = new();
-        List<Thread> threads = new();
+        static List<Thread> threads = new();
 
 
         [Route("/Cardiac-frecunecy")]
@@ -89,7 +89,7 @@ namespace monitors_comunication.Controllers
             if (threads.Count > 0)
             {
                 Thread thread = threads.First<Thread>();
-                thread.Abort();
+                thread.Interrupt();
                 threads.Clear();
                 GC.Collect();
             }
