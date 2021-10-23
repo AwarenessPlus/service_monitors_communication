@@ -76,6 +76,10 @@ namespace Awareness_Desktop.BackEnd.Conexion_Monitores
                     xCount[index] = 0;
                 }
             }
+            Array.Clear(yCount, 0, yCount.Length);
+            Array.Clear( xCount, 0, xCount.Length);
+            Array.Clear(auxiliarArrayOfImages, 0, auxiliarArrayOfImages.Length);
+            yCoordinatesToPudateStack.Clear();
             return false;
         }
         public static int[] CalculateSize(List<int> coordinates)
@@ -114,6 +118,8 @@ namespace Awareness_Desktop.BackEnd.Conexion_Monitores
                     }
                 }
             }
+            Array.Clear(CopyFromyCoordinates, 0, CopyFromyCoordinates.Length);
+            Array.Clear(CopyFromxCoordinates, 0, CopyFromxCoordinates.Length);
             return index;
         }
     }
