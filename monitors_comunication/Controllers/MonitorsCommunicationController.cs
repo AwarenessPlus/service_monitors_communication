@@ -102,7 +102,7 @@ namespace monitors_comunication.Controllers
                 GC.Collect();
             }
             Console.WriteLine("thread fnished");
-            return Ok("System connected");
+            return Ok("System disconnected");
 
         }
 
