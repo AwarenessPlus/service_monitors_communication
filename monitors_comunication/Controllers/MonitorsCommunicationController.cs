@@ -24,7 +24,15 @@ namespace monitors_comunication.Controllers
         static List<Thread> threads = new();
 
 
-        [Route("/Cardiac-frecunecy")]
+        [Route("/health-status")]
+        [HttpGet]
+        public IActionResult GetHealth()
+        {
+            return Ok("Service connected");
+        }
+
+
+        [Route("/Cardiac-frecuency")]
         [HttpGet]
         public async Task<IActionResult> GetCardiacFrecuency()
         {
