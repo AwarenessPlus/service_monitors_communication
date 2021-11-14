@@ -72,7 +72,7 @@ namespace monitors_comunication.Controllers
 
         [Route("/connect")]
         [HttpGet]
-        public  IActionResult GetHealthAsync() {
+        public  IActionResult ConnectMonitor() {
 
             Console.WriteLine(threads.Count);
             if (threads.Count > 0)

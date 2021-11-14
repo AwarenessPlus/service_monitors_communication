@@ -11,7 +11,7 @@ namespace Awareness_Desktop.BackEnd.Conexion_Monitores
      * This class allows you create new images from one image having the coordinates where to cut */
     class ImageSeparator
     {
-        private readonly List<Image<Bgr, byte>> _imagesCreated;
+        
         private readonly List<int> _xCoordinates;
         readonly List<int> _yCoordinates;
 
@@ -22,24 +22,21 @@ namespace Awareness_Desktop.BackEnd.Conexion_Monitores
         }
         public ImageSeparator(List<int> xCoordinates, List<int> yCoordinates)
         {
-            _imagesCreated = new();
             this._xCoordinates = xCoordinates;
             this._yCoordinates = yCoordinates;
         }
-        public List<Image<Bgr, byte>> GetImagesCreated()
+        public List<Image<Bgr, byte>> SplitImage(Image<Bgr, byte> imageToSplit)
         {
-            return this._imagesCreated;
-        }
-        public bool SplitImage(Image<Bgr, byte> imageToSplit)
-        {
-            int[] xSizeImages = CalculateSize(_xCoordinates);
+
+            List<Image<Bgr, byte>> _imagesCreated = new();
+        int[] xSizeImages = CalculateSize(_xCoordinates);
             int[] ySizeImages = CalculateSize(_yCoordinates);
             Image<Bgr, byte>[] auxiliarArrayOfImages;
             HashSet<int> yCoordinatesToPudateStack = new();
 
             if ((_xCoordinates.Count < 1 || _xCoordinates.Count > imageToSplit.Cols) &&
                    (_yCoordinates.Count < 1 || _yCoordinates.Count > imageToSplit.Rows))
-                return false;
+                return null;
             foreach (int yCounter in ySizeImages)
             {
                 foreach (int xCounter in xSizeImages)
@@ -48,7 +45,7 @@ namespace Awareness_Desktop.BackEnd.Conexion_Monitores
                     _imagesCreated.Add(image);
                 }
             }
-            auxiliarArrayOfImages = this._imagesCreated.ToArray();
+            auxiliarArrayOfImages = _imagesCreated.ToArray();
             int[] xCount = new int[auxiliarArrayOfImages.Length];
             int[] yCount = new int[auxiliarArrayOfImages.Length];
             for (int yCounter = 0; yCounter < _yCoordinates.ToArray()[^1]; yCounter++)
@@ -80,7 +77,7 @@ namespace Awareness_Desktop.BackEnd.Conexion_Monitores
             Array.Clear( xCount, 0, xCount.Length);
             Array.Clear(auxiliarArrayOfImages, 0, auxiliarArrayOfImages.Length);
             yCoordinatesToPudateStack.Clear();
-            return false;
+            return _imagesCreated;
         }
         public static int[] CalculateSize(List<int> coordinates)
         {
