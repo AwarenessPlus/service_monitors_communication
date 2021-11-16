@@ -11,6 +11,7 @@ using System.IO;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using monitors_comunication.Configuration;
 
 namespace monitors_comunication.Controllers
 {
@@ -19,10 +20,15 @@ namespace monitors_comunication.Controllers
     public class MonitorsCommunicationController : ControllerBase
     {
 
-        MonitorVitalsSignsConnectionByVideo monitorConection = new();
-        ListennerMonitor listenner = new();
-        static List<Thread> threads = new();
+        private readonly IMonitorConnection<FileStream> _monitorConnection;
+        
+       
 
+        public MonitorsCommunicationController(IMonitorConnection<FileStream> monitorConnection)
+        {
+            this._monitorConnection = monitorConnection;
+
+        }
 
         [Route("/health-status")]
         [HttpGet]
@@ -37,8 +43,8 @@ namespace monitors_comunication.Controllers
         public async Task<IActionResult> GetCardiacFrecuency()
         {
 
-            var image = await Task.Run(() => System.IO.File.OpenRead(AppDomain.CurrentDomain.BaseDirectory + "\\video\\hola1.png"));
-            return File(image, "image/png");
+            var image = _monitorConnection.GetDataMonitor(Configuration.Configuration.CARDIAC_FRECUENCY);
+            return File(await image, "image/png");
 
 
          
@@ -48,9 +54,10 @@ namespace monitors_comunication.Controllers
         [HttpGet]
         public async Task<IActionResult> GetSaturation()
         {
+            var image = _monitorConnection.GetDataMonitor(Configuration.Configuration.SATURATION);
+            return File(await image, "image/png");
+            
 
-            var image = await Task.Run(() => System.IO.File.OpenRead(AppDomain.CurrentDomain.BaseDirectory + "\\video\\hola2.png"));
-            return File(image, "image/png");
 
 
 
@@ -59,11 +66,11 @@ namespace monitors_comunication.Controllers
 
         [Route("/non-invasive-blood-presure")]
         [HttpGet]
-        public async Task<IActionResult> GetNonInvasiveBloodPresureAsync()
+        public async Task<IActionResult> GetNonInvasiveBloodPresure()
         {
-            var image =  await Task.Run(() => System.IO.File.OpenRead(AppDomain.CurrentDomain.BaseDirectory + "\\video\\hola3.png"));
-            
-            return File(image, "image/png");
+            var image = _monitorConnection.GetDataMonitor(Configuration.Configuration.NON_INVASIVE_BLOOD_PRESURE);
+            return File(await image, "image/png");
+
 
 
 
@@ -74,19 +81,15 @@ namespace monitors_comunication.Controllers
         [HttpGet]
         public  IActionResult ConnectMonitor() {
 
-            Console.WriteLine(threads.Count);
-            if (threads.Count > 0)
+            Boolean hilo = _monitorConnection.ConnectMonitor();
+            if (!hilo)
             {
-                return BadRequest(" The sistem is processing right now another monitor, cancel connection to allow a new connection");
+                return Ok(" The sistem is processing right now another monitor, cancel connection to allow a new connection");
             }
-
-            Console.WriteLine("creating thread");
-            Thread hilo = new(new ThreadStart(listenner.ListenerMonitores));  
-            hilo.Start();
-            threads.Add(hilo);
-            Console.WriteLine(threads.Count);
-            Console.WriteLine( "thread created");
-            return Ok("System connected");
+            else
+            {
+                return Ok("System connected");
+            }
 
         }
 
@@ -94,17 +97,16 @@ namespace monitors_comunication.Controllers
         [HttpGet]
         public IActionResult DisconnectMonitor()
         {
-            if (threads.Count > 0)
+            if (_monitorConnection.DisconnectMonitor())
             {
-                Thread thread = threads.First<Thread>();
-                thread.Interrupt();
-                threads.Clear();
-                GC.Collect();
+                return Ok("System disconnected");
             }
-            Console.WriteLine("thread fnished");
-            return Ok("System disconnected");
+            return Ok("There is no monitor connected");
+        
 
-        }
+
+
+    }
 
     }
 }
