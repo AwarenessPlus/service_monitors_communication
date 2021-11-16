@@ -7,8 +7,10 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.OpenApi.Models;
+using monitors_comunication.Services;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -26,6 +28,8 @@ namespace monitors_comunication
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            IMonitorConnection<FileStream> monitorConnection = MonitorVitalsSignsConnectionByVideo<FileStream>.GetInstance();
+            services.AddSingleton(monitorConnection);
             services.AddCors(options =>
             {
                 options.AddDefaultPolicy(

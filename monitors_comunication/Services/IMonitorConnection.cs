@@ -3,17 +3,29 @@ using Emgu.CV.Structure;
 using monitors_comunication.Models;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace monitors_comunication.Services
 {
-    interface IMonitorConnection<T>
+    public interface IMonitorConnection<T>
     {
-        public int ConnectMonitor();
+        private static IMonitorConnection<T> _instance;
+        public static IMonitorConnection<T> GetInstance()
+        {
+            if (_instance == null)
+            {
+                _instance = new MonitorVitalsSignsConnectionByVideo<T>();
 
-        public Dictionary<String,T> GetDataMonitor();
+            }
+            return _instance;
+        }
+        public bool ConnectMonitor();
 
-        public int DisconnectMonitor();
+        public bool DisconnectMonitor();
+
+        Task<FileStream> GetDataMonitor(String vitalSign);
     }
 }

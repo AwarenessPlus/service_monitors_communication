@@ -7,12 +7,12 @@ namespace monitors_comunication.Services
 {
     public class ListennerMonitor
     {
-        private string path = AppDomain.CurrentDomain.BaseDirectory + @"/video/videoPrueba.mp4";
-        public string Path { get => path; set => path = value; }
+        private string pathVideo = AppDomain.CurrentDomain.BaseDirectory + @"/video/videoPrueba.mp4";
+        public string Path { get => pathVideo; set => pathVideo = value; }
        
         public void ListenerMonitores()
         {
-            VideoCapture capture = new VideoCapture(path);
+            VideoCapture capture = new VideoCapture(pathVideo);
             if (!capture.IsOpened)
             {
                 throw new Exception("Capture intialization failed");

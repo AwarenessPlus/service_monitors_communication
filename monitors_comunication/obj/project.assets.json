@@ -1769,24 +1769,19 @@
     ]
   },
   "packageFolders": {
-    "C:\\Users\\aulasingenieria\\.nuget\\packages\\": {},
-    "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages": {}
+    "C:\\Users\\jmarinflorez\\.nuget\\packages\\": {}
   },
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\aulasingenieria\\Documents\\Awareness+\\web services\\monitors_comunication\\service_monitors_comunication\\monitors_comunication\\monitors_comunication.csproj",
+      "projectUniqueName": "C:\\Uni\\service_monitors_communication\\monitors_comunication\\monitors_comunication.csproj",
       "projectName": "monitors_comunication",
-      "projectPath": "C:\\Users\\aulasingenieria\\Documents\\Awareness+\\web services\\monitors_comunication\\service_monitors_comunication\\monitors_comunication\\monitors_comunication.csproj",
-      "packagesPath": "C:\\Users\\aulasingenieria\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\aulasingenieria\\Documents\\Awareness+\\web services\\monitors_comunication\\service_monitors_comunication\\monitors_comunication\\obj\\",
+      "projectPath": "C:\\Uni\\service_monitors_communication\\monitors_comunication\\monitors_comunication.csproj",
+      "packagesPath": "C:\\Users\\jmarinflorez\\.nuget\\packages\\",
+      "outputPath": "C:\\Uni\\service_monitors_communication\\monitors_comunication\\obj\\",
       "projectStyle": "PackageReference",
-      "fallbackFolders": [
-        "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
-      ],
       "configFilePaths": [
-        "C:\\Users\\aulasingenieria\\AppData\\Roaming\\NuGet\\NuGet.Config",
-        "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
+        "C:\\Users\\jmarinflorez\\AppData\\Roaming\\NuGet\\NuGet.Config",
         "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
       ],
       "originalTargetFrameworks": [
@@ -1851,7 +1846,7 @@
             "privateAssets": "all"
           }
         },
-        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\5.0.401\\RuntimeIdentifierGraph.json"
+        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\5.0.302\\RuntimeIdentifierGraph.json"
       }
     }
   }

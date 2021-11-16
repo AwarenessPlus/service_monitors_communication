@@ -2,17 +2,23 @@ using Microsoft.AspNetCore.Mvc;
 using System;
 using Xunit;
 using monitors_comunication.Controllers;
+using System.IO;
+using monitors_comunication.Services;
+using Moq;
+using System.Threading.Tasks;
 
 namespace ServiceTest
 {
     public class ServiceMonitorsConnectionTest
     {
         MonitorsCommunicationController _controller;
+        Mock<IMonitorConnection<FileStream>> monitorConnection;
 
         public ServiceMonitorsConnectionTest()
 
         {
-            _controller = new();
+            monitorConnection  = new Mock<IMonitorConnection<FileStream>>();
+            _controller = new(monitorConnection.Object);
         }
 
         [Fact]
@@ -23,32 +29,9 @@ namespace ServiceTest
         }
 
         [Fact]
-        public async void ok_GetCardiacFrecuency_withResults()
-        {
-            FileStreamResult okResult = (FileStreamResult )await _controller.GetCardiacFrecuency();
-            
-           
-            Assert.Equal("image/png", okResult.ContentType);
-        }
-
-        [Fact]
-        public async void ok_GetSaturation_withResults()
-        {
-            FileStreamResult okResult = (FileStreamResult)await _controller.GetSaturation();
-
-            Assert.Equal("image/png", okResult.ContentType);
-        }
-
-        [Fact]
-        public async void ok_GetNonInvasiveBloodPresureAsync_withResults()
-        {
-            FileStreamResult okResult = (FileStreamResult)await _controller.GetNonInvasiveBloodPresureAsync();
-            Assert.Equal("image/png", okResult.ContentType);
-        }
-
-        [Fact]
         public void ok_ConnectMonitor_withResults()
         {
+            monitorConnection.Setup(P => P.ConnectMonitor()).Returns(true);
             IActionResult okResult = _controller.ConnectMonitor();
             Assert.IsType<OkObjectResult>(okResult as OkObjectResult);
         }
@@ -57,6 +40,7 @@ namespace ServiceTest
         [Fact]
         public void ok_DisconnectMonitor_withResults()
         {
+            monitorConnection.Setup(P => P.DisconnectMonitor()).Returns(true);
             IActionResult okResult = _controller.DisconnectMonitor();
             Assert.IsType<OkObjectResult>(okResult as OkObjectResult);
         }

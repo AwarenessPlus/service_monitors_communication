@@ -7,42 +7,86 @@ using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Drawing.Imaging;
-
+using System.Threading;
+using System.Linq;
+using System.Threading.Tasks;
+using System.IO;
 
 namespace monitors_comunication.Services
 {
-    public class MonitorVitalsSignsConnectionByVideo
+    public class MonitorVitalsSignsConnectionByVideo<T> : IMonitorConnection<T>
     {
-        private string path = AppDomain.CurrentDomain.BaseDirectory + @"/video/videoPrueba.mp4";
+        static List<Thread> threads;
+        private static MonitorVitalsSignsConnectionByVideo<T> _instance;
 
-        public string Path { get => path; set => path = value; }
-
-
-        public int DisconnectMonitor()
+        public static IMonitorConnection<T> GetInstance()
         {
-            throw new NotImplementedException();
+            if (_instance == null)
+            {
+                _instance = new MonitorVitalsSignsConnectionByVideo<T>();
+                threads = new();
+
+            }
+            return _instance;
         }
 
-        public void GetDataMonitor()
+
+        public Boolean ConnectMonitor()
         {
-            Mat imageAux = CvInvoke.Imread(AppDomain.CurrentDomain.BaseDirectory + "\\video\\holaOriginal.png", ImreadModes.Color);
-            string[] colors = { "Green", "Yellow", "Red", "Yellow", "White", "Red", "Yellow" };
-            CoordinatesFinder coordinates = new(colors);
-            ImageSeparator imageSeparator = new(coordinates.FindxCoordinates(imageAux), coordinates.FindyCoordinates(imageAux));
-            Image<Bgr, byte>[] arrayOfImages = imageSeparator.SplitImage(imageAux.ToImage<Bgr, Byte>()).ToArray();
-            Console.WriteLine("imagen añadida");
-            CvInvoke.Imwrite(AppDomain.CurrentDomain.BaseDirectory + "\\video\\hola1.png", arrayOfImages[6]);
-            CvInvoke.Imwrite(AppDomain.CurrentDomain.BaseDirectory + "\\video\\hola2.png", arrayOfImages[10]);
-            CvInvoke.Imwrite(AppDomain.CurrentDomain.BaseDirectory + "\\video\\hola3.png", arrayOfImages[24]);
-            arrayOfImages = null;
-            coordinates = null;
-            imageAux = null;
-            imageSeparator = null;
-            GC.Collect();
 
- 
+            if (threads.Count > 0)
+            {
+                return false;
+            }
+            else
+            {
+                ListennerMonitor listenner = new();
+                Thread hilo = new(new ThreadStart(listenner.ListenerMonitores));
+                hilo.Start();
+               
+                threads.Add(hilo);
+                return true;
+            }
 
+           
         }
 
+        public bool DisconnectMonitor()
+        {
+
+            if (threads.Count > 0)
+            {
+                Thread thread = threads.First<Thread>();
+                thread.Interrupt();
+                threads.Clear();
+                GC.Collect();
+                return true;
+            }
+            return false;
+        }
+
+        public async Task<FileStream> GetDataMonitor(String vitalSign)
+        {
+
+            if (Configuration.Configuration.CARDIAC_FRECUENCY.Equals(vitalSign))
+            {
+                 FileStream image= await Task.Run(() => System.IO.File.OpenRead(AppDomain.CurrentDomain.BaseDirectory + "\\video\\hola1.png"));
+                return image;
+            }
+            else if (Configuration.Configuration.SATURATION.Equals(vitalSign))
+            {
+                FileStream image = await Task.Run(() => System.IO.File.OpenRead(AppDomain.CurrentDomain.BaseDirectory + "\\video\\hola2.png"));
+                return image;
+            }
+            else if (Configuration.Configuration.NON_INVASIVE_BLOOD_PRESURE.Equals(vitalSign))
+            {
+                FileStream image = await Task.Run(() => System.IO.File.OpenRead(AppDomain.CurrentDomain.BaseDirectory + "\\video\\hola3.png"));
+                return image;
+            }
+            else
+            {
+                return null;
+            }
+        }
     }
 }
